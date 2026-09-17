@@ -1,543 +1,144 @@
 <!DOCTYPE html>
-<html lang="en" class="scroll-smooth">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Pyral — Find the next experiment worth running</title>
-  <meta name="description" content="CriticalPath is materials intelligence from Pyral. 35 prediction heads, 7 domains, 42 of 53 physics checks passing. Rank the next experiment worth running." />
-  <meta name="theme-color" content="#0f172a" />
-  <meta property="og:title" content="Pyral — Find the next experiment worth running" />
-  <meta property="og:description" content="Materials intelligence AI. CriticalPath models your process, checks it against physics, and ranks the experiments that move yield, recovery, and cost." />
+  <title>Pyral</title>
+  <meta property="og:title" content="Pyral" />
+  <meta property="og:description" content="AI for untapped material value." />
   <meta property="og:type" content="website" />
-  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'%3E%3Cpath d='M24 4L42 16L24 22L6 16Z' fill='%23FCD34D'/%3E%3Cpath d='M6 16L24 22L24 44L6 32Z' fill='%23B45309'/%3E%3Cpath d='M42 16L24 22L24 44L42 32Z' fill='%23D97706'/%3E%3C/svg%3E" />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&display=swap" rel="stylesheet" />
+  <meta property="og:url" content="https://pyral.ai" />
+  <meta property="og:image" content="https://pyral.ai/og.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Pyral" />
+  <meta name="twitter:description" content="AI for untapped material value." />
+  <meta name="apple-mobile-web-app-title" content="Pyral" />
+  <meta name="theme-color" content="#ffffff" />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpolygon points='16,2 28,10 28,22 16,30 4,22 4,10' fill='none' stroke='%23B45309' stroke-width='2'/%3E%3Cline x1='16' y1='2' x2='16' y2='30' stroke='%23B45309' stroke-width='1.5' opacity='0.4'/%3E%3C/svg%3E" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&display=swap" rel="stylesheet" />
   <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          fontFamily: {
-            sans: ["Inter", "system-ui", "sans-serif"],
-            serif: ["Newsreader", "Georgia", "serif"],
-          },
-          colors: {
-            slate: { 950: "#0b1220" },
-          },
-        },
-      },
-    };
-  </script>
+  <script>tailwind.config={theme:{extend:{fontFamily:{sans:["Inter","system-ui"]}}}};</script>
   <style>
-    html { color-scheme: dark; }
-    body { font-feature-settings: "ss01" on, "cv11" on; }
-    ::selection { background: #fbbf24; color: #0f172a; }
-    .font-serif { font-optical-sizing: auto; }
-    @media (prefers-reduced-motion: reduce) {
-      html { scroll-behavior: auto; }
-      * { transition: none !important; animation: none !important; }
-    }
+    ::selection { background: #D97706; color: white; }
+    .fade-in { opacity: 0; transform: translateY(10px); transition: all 0.7s ease; }
+    .fade-in.v { opacity: 1; transform: translateY(0); }
   </style>
 </head>
-<body class="bg-slate-900 text-white antialiased font-sans">
-  <div id="root"></div>
+<body class="bg-white text-neutral-900 font-sans antialiased">
 
-  <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
-  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
-  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-
-  <script type="text/babel">
-    const { useState, useEffect } = React;
-
-    function Crystal({ className = "w-8 h-8", id = "g" }) {
-      return (
-        <svg className={className} viewBox="0 0 48 48" fill="none" aria-hidden="true">
-          <defs>
-            <linearGradient id={id + "top"} x1="24" y1="4" x2="24" y2="22">
-              <stop stopColor="#FDE68A" />
-              <stop offset="1" stopColor="#F59E0B" />
-            </linearGradient>
-          </defs>
-          <path d="M24 4L42 16L24 22L6 16Z" fill={`url(#${id}top)`} />
-          <path d="M6 16L24 22L24 44L6 32Z" fill="#B45309" />
-          <path d="M42 16L24 22L24 44L42 32Z" fill="#D97706" />
-          <path d="M24 4L42 16L24 22L6 16Z" stroke="#FEF3C7" strokeWidth="0.8" fill="none" opacity="0.7" />
-          <path d="M24 4V44" stroke="#FEF3C7" strokeWidth="0.7" opacity="0.35" />
-          <path d="M6 16L24 22L42 16" stroke="#78350F" strokeWidth="0.6" opacity="0.4" />
+  <nav class="fixed top-0 w-full z-50 bg-white/80 backdrop-blur-md border-b border-neutral-100">
+    <div class="max-w-5xl mx-auto px-6 h-14 flex items-center justify-between">
+      <div class="flex items-center gap-2">
+        <svg class="w-5 h-5" viewBox="0 0 32 32" fill="none">
+          <polygon points="16,2 28,10 28,22 16,30 4,22 4,10" fill="none" stroke="#B45309" stroke-width="2"/>
+          <line x1="16" y1="2" x2="16" y2="30" stroke="#B45309" stroke-width="1.5" opacity="0.4"/>
         </svg>
-      );
-    }
+        <span class="text-sm font-medium tracking-widest text-neutral-800">PYRAL</span>
+      </div>
+      <a href="#contact" class="text-xs font-medium text-amber-700 hover:text-amber-900 transition-colors">Contact →</a>
+    </div>
+  </nav>
 
-    const NAV = [
-      { href: "#problem", label: "Problem" },
-      { href: "#how", label: "How it works" },
-      { href: "#applications", label: "Applications" },
-      { href: "#evidence", label: "Evidence" },
-      { href: "#pricing", label: "Pricing" },
-      { href: "#contact", label: "Contact" },
-    ];
+  <!-- HERO -->
+  <section class="min-h-[90vh] flex items-center px-6">
+    <div class="max-w-3xl mx-auto">
+      <h1 class="text-[clamp(2.5rem,6vw,4.5rem)] font-light leading-[1.08] tracking-tight text-neutral-900 mb-8">
+        We use AI to create value<br class="hidden md:block"/>
+        <span class="text-amber-700">where there was none.</span>
+      </h1>
+      <p class="text-lg text-neutral-500 font-light max-w-md leading-relaxed">
+        Pyral is a materials intelligence company.
+      </p>
+    </div>
+  </section>
 
-    function Nav() {
-      const [open, setOpen] = useState(false);
-      const [scrolled, setScrolled] = useState(false);
+  <div class="max-w-5xl mx-auto px-6"><hr class="border-neutral-100" /></div>
 
-      useEffect(() => {
-        const onScroll = () => setScrolled(window.scrollY > 8);
-        onScroll();
-        window.addEventListener("scroll", onScroll, { passive: true });
-        return () => window.removeEventListener("scroll", onScroll);
-      }, []);
+  <!-- THREE DOMAINS -->
+  <section class="py-28 px-6">
+    <div class="max-w-4xl mx-auto grid md:grid-cols-3 gap-16">
+      <div class="fade-in">
+        <div class="w-8 h-px bg-amber-700 mb-5"></div>
+        <h3 class="text-sm font-medium mb-2">Critical minerals.</h3>
+        <p class="text-sm text-neutral-400 font-light leading-relaxed">
+          The deposit has already been mined. It's in the wrong pile.
+        </p>
+      </div>
+      <div class="fade-in">
+        <div class="w-8 h-px bg-amber-700 mb-5"></div>
+        <h3 class="text-sm font-medium mb-2">Industrial materials.</h3>
+        <p class="text-sm text-neutral-400 font-light leading-relaxed">
+          The expensive run is the one you shouldn't have started.
+        </p>
+      </div>
+      <div class="fade-in">
+        <div class="w-8 h-px bg-amber-700 mb-5"></div>
+        <h3 class="text-sm font-medium mb-2">Demanding environments.</h3>
+        <p class="text-sm text-neutral-400 font-light leading-relaxed">
+          No analog. No second try.
+        </p>
+      </div>
+    </div>
+  </section>
 
-      useEffect(() => {
-        document.body.style.overflow = open ? "hidden" : "";
-        return () => { document.body.style.overflow = ""; };
-      }, [open]);
+  <div class="max-w-5xl mx-auto px-6"><hr class="border-neutral-100" /></div>
 
-      return (
-        <header className={`fixed inset-x-0 top-0 z-50 transition-colors ${scrolled || open ? "bg-slate-900/90 backdrop-blur-md border-b border-white/10" : "border-b border-transparent"}`}>
-          <a href="#main" className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-3 focus:z-50 focus:bg-amber-400 focus:text-slate-900 focus:px-3 focus:py-1.5 focus:text-sm">Skip to content</a>
-          <div className="mx-auto flex max-w-6xl items-center justify-between px-5 py-4 md:px-6">
-            <a href="#top" className="flex items-center gap-2.5" onClick={() => setOpen(false)}>
-              <Crystal className="h-7 w-7" id="nav" />
-              <span className="text-[15px] font-medium tracking-tight">Pyral</span>
-            </a>
-            <nav className="hidden items-center gap-8 md:flex" aria-label="Primary">
-              {NAV.map((l) => (
-                <a key={l.href} href={l.href} className="text-sm text-slate-300 transition hover:text-white">{l.label}</a>
-              ))}
-              <a href="#contact" className="rounded-md bg-amber-400 px-3.5 py-1.5 text-sm font-medium text-slate-900 transition hover:bg-amber-300">Request assessment</a>
-            </nav>
-            <button
-              type="button"
-              className="inline-flex h-10 w-10 items-center justify-center rounded-md text-slate-200 md:hidden"
-              aria-label={open ? "Close menu" : "Open menu"}
-              aria-expanded={open}
-              onClick={() => setOpen((v) => !v)}
-            >
-              {open ? (
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path d="M6 6l12 12M18 6L6 18" /></svg>
-              ) : (
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path d="M4 7h16M4 12h16M4 17h16" /></svg>
-              )}
-            </button>
-          </div>
-          {open && (
-            <nav className="border-t border-white/10 bg-slate-900 px-5 py-6 md:hidden" aria-label="Mobile">
-              <div className="flex flex-col gap-1">
-                {NAV.map((l) => (
-                  <a key={l.href} href={l.href} onClick={() => setOpen(false)} className="rounded-md px-2 py-3 text-lg text-slate-200">{l.label}</a>
-                ))}
-                <a href="#contact" onClick={() => setOpen(false)} className="mt-3 rounded-md bg-amber-400 px-4 py-3 text-center font-medium text-slate-900">Request assessment</a>
-              </div>
-            </nav>
-          )}
-        </header>
-      );
-    }
+  <!-- QUOTE -->
+  <section class="py-28 px-6">
+    <div class="max-w-2xl mx-auto text-center fade-in">
+      <p class="text-2xl md:text-3xl font-light leading-relaxed text-neutral-800">
+        The most valuable materials on Earth are already here. They're in the wrong form.
+      </p>
+    </div>
+  </section>
 
-    function Hero() {
-      const rows = [
-        { n: "01", exp: "Fe³⁺ 0.15 M · 82 °C · 4 h", tag: "Δ recovery +2.1σ", good: true },
-        { n: "02", exp: "Grind P80 45 μm · pH 1.8", tag: "Δ impurity −1.4σ", good: true },
-        { n: "03", exp: "Recycle 12% · 95 °C", tag: "Low information", good: false },
-        { n: "04", exp: "Oxalic 1.2 eq · 25 °C", tag: "Mass balance fail", good: false },
-      ];
-      return (
-        <section id="top" className="relative overflow-hidden pt-28 md:pt-36">
-          <div className="pointer-events-none absolute inset-0" aria-hidden="true">
-            <div className="absolute -top-32 left-1/2 h-[520px] w-[520px] -translate-x-1/2 rounded-full bg-amber-500/10 blur-3xl" />
-            <div className="absolute right-[-80px] top-24 opacity-[0.07]">
-              <Crystal className="h-[420px] w-[420px]" id="heroBg" />
-            </div>
-          </div>
-          <div className="relative mx-auto grid max-w-6xl items-center gap-14 px-5 pb-20 md:grid-cols-12 md:px-6 md:pb-28">
-            <div className="md:col-span-7">
-              <p className="mb-5 text-xs font-medium uppercase tracking-[0.22em] text-amber-400">CriticalPath · Materials intelligence</p>
-              <h1 className="font-serif text-[2.55rem] leading-[1.12] tracking-tight text-white sm:text-5xl md:text-[3.5rem]">
-                Find the next experiment worth running
-              </h1>
-              <p className="mt-6 max-w-xl text-lg leading-relaxed text-slate-300">
-                CriticalPath models your circuit across 35 prediction heads, checks them against physics, and ranks the runs most likely to move yield, recovery, and cost. Built for critical minerals, recycling, and advanced materials.
-              </p>
-              <div className="mt-8 flex flex-wrap items-center gap-3">
-                <a href="#contact" className="rounded-md bg-amber-400 px-5 py-2.5 text-sm font-medium text-slate-900 transition hover:bg-amber-300">Request an assessment</a>
-                <a href="#evidence" className="rounded-md border border-white/15 px-5 py-2.5 text-sm text-slate-200 transition hover:border-white/30 hover:text-white">See the evidence</a>
-              </div>
-              <p className="mt-8 text-sm text-slate-400">35 heads · 7 domains · 42 of 53 physics checks passing</p>
-            </div>
-            <div className="md:col-span-5">
-              <div className="rounded-xl border border-white/10 bg-slate-950/60 p-5 shadow-2xl shadow-black/40 backdrop-blur">
-                <div className="mb-4 flex items-center justify-between">
-                  <span className="text-[11px] font-medium uppercase tracking-[0.18em] text-slate-400">Next experiments</span>
-                  <span className="rounded-full bg-amber-400/10 px-2 py-0.5 text-[11px] text-amber-300">ranked</span>
-                </div>
-                <ul className="space-y-3">
-                  {rows.map((r) => (
-                    <li key={r.n} className="flex items-start gap-3 border-t border-white/5 pt-3 first:border-0 first:pt-0">
-                      <span className="font-serif text-sm text-amber-400/90">{r.n}</span>
-                      <div className="min-w-0 flex-1">
-                        <p className="truncate text-sm text-slate-100">{r.exp}</p>
-                        <p className={`mt-0.5 text-xs ${r.good ? "text-amber-300/80" : "text-slate-500"}`}>{r.tag}</p>
-                      </div>
-                    </li>
-                  ))}
-                </ul>
-                <p className="mt-4 border-t border-white/5 pt-3 text-[11px] leading-relaxed text-slate-500">
-                  Expected-information ranking on your posterior. Failed physics checks are excluded, not averaged away.
-                </p>
-              </div>
-            </div>
-          </div>
-        </section>
-      );
-    }
+  <div class="max-w-5xl mx-auto px-6"><hr class="border-neutral-100" /></div>
 
-    function Problem() {
-      return (
-        <section id="problem" className="scroll-mt-24 border-t border-white/10">
-          <div className="mx-auto max-w-6xl px-5 py-20 md:px-6 md:py-28">
-            <p className="text-xs font-medium uppercase tracking-[0.22em] text-amber-400">The problem</p>
-            <h2 className="mt-4 max-w-3xl font-serif text-3xl leading-snug tracking-tight md:text-4xl">
-              The bottleneck is not generating data. It is knowing which experiment to run next.
-            </h2>
-            <div className="mt-12 grid gap-8 md:grid-cols-3">
-              {[
-                {
-                  t: "The design space is combinatorial",
-                  d: "Reagent, temperature, grind, residence time, recycle ratio, redox. A leach campaign is often a six-figure point estimate. Spreadsheets do not search the surface.",
-                },
-                {
-                  t: "Simulation and ML miss the plant",
-                  d: "First-principles models are slow to fit and drift from historian data. Unconstrained ML will violate mass balance and still look confident on a dashboard.",
-                },
-                {
-                  t: "Last campaign never becomes a prior",
-                  d: "Assays, notebooks, and PI tags sit in files. Operators re-run failed conditions because nothing ranked the remaining uncertainty against cost.",
-                },
-              ].map((c) => (
-                <article key={c.t} className="border-t border-white/10 pt-6">
-                  <h3 className="text-base font-medium text-white">{c.t}</h3>
-                  <p className="mt-3 text-sm leading-relaxed text-slate-400">{c.d}</p>
-                </article>
-              ))}
-            </div>
-            <p className="mt-14 max-w-3xl text-base leading-relaxed text-slate-300">
-              Pyral does not sell a dashboard. We sell a ranked list of experiments, with the physics that survived contact with your data.
-            </p>
-          </div>
-        </section>
-      );
-    }
+  <!-- CONTACT -->
+  <section id="contact" class="py-28 px-6">
+    <div class="max-w-md mx-auto">
+      <p class="text-sm text-neutral-500 font-light mb-10">
+        We work with a small number of operators.
+      </p>
 
-    function HowItWorks() {
-      const steps = [
-        {
-          n: "01",
-          t: "Characterize",
-          d: "Ingest assays, historians, lab notebooks, and flowsheets. Feed chemistry, operating windows, and hard constraints become a structured process state.",
-        },
-        {
-          n: "02",
-          t: "Model",
-          d: "35 prediction heads across 7 domains: recovery, grade, impurity deportment, reagent use, kinetics, energy, and fouling. Fit to your data, regularized by physics.",
-        },
-        {
-          n: "03",
-          t: "Prioritize",
-          d: "Each candidate run is scored by expected information on the variables that move yield and cost. You see why a point is next — not a black-box suggestion.",
-        },
-        {
-          n: "04",
-          t: "Validate",
-          d: "53 physics and conservation checks: mass, charge, thermodynamic bounds, phase rules. 42 pass. The remaining 11 are documented, not hidden.",
-        },
-      ];
-      return (
-        <section id="how" className="scroll-mt-24 border-t border-white/10 bg-slate-950/40">
-          <div className="mx-auto max-w-6xl px-5 py-20 md:px-6 md:py-28">
-            <p className="text-xs font-medium uppercase tracking-[0.22em] text-amber-400">How it works</p>
-            <h2 className="mt-4 font-serif text-3xl tracking-tight md:text-4xl">Characterize → Model → Prioritize → Validate</h2>
-            <p className="mt-4 max-w-2xl text-slate-400">A closed loop between plant data and the next run. No stage is optional.</p>
-            <div className="mt-14 grid gap-10 sm:grid-cols-2 lg:grid-cols-4">
-              {steps.map((s) => (
-                <article key={s.n}>
-                  <p className="font-serif text-3xl text-amber-400/90">{s.n}</p>
-                  <h3 className="mt-4 text-lg font-medium">{s.t}</h3>
-                  <p className="mt-3 text-sm leading-relaxed text-slate-400">{s.d}</p>
-                </article>
-              ))}
-            </div>
-          </div>
-        </section>
-      );
-    }
+      <form class="space-y-5" action="https://formspree.io/f/placeholder" method="POST">
+        <input type="text" name="name" required placeholder="Name"
+          class="w-full border-b border-neutral-200 focus:border-amber-700 bg-transparent py-3 text-sm outline-none transition-colors placeholder-neutral-400" />
+        <input type="email" name="email" required placeholder="Work email"
+          class="w-full border-b border-neutral-200 focus:border-amber-700 bg-transparent py-3 text-sm outline-none transition-colors placeholder-neutral-400" />
+        <input type="text" name="company" placeholder="Company"
+          class="w-full border-b border-neutral-200 focus:border-amber-700 bg-transparent py-3 text-sm outline-none transition-colors placeholder-neutral-400" />
+        <textarea name="message" rows="2" placeholder="What are you working on?"
+          class="w-full border-b border-neutral-200 focus:border-amber-700 bg-transparent py-3 text-sm outline-none transition-colors placeholder-neutral-400 resize-none"></textarea>
+        <button type="submit"
+          class="mt-4 bg-neutral-900 hover:bg-neutral-800 text-white text-sm font-medium py-3 px-8 rounded-full transition-colors">
+          Send
+        </button>
+      </form>
 
-    function Applications() {
-      const cards = [
-        {
-          k: "Extraction",
-          checks: "14 / 16",
-          pass: 14,
-          total: 16,
-          d: "Leach, roast-leach, pressure oxidation. Recovery, kinetics, acid balance, and gangue interactions on primary and refractory feeds.",
-          items: ["Leaching kinetics", "Acid & redox balance", "Gangue & impurity uptake"],
-        },
-        {
-          k: "Separation",
-          checks: "13 / 17",
-          pass: 13,
-          total: 17,
-          d: "Solvent extraction, ion exchange, precipitation, crystallization. Selectivity, distribution, crud, and capacity under plant constraints.",
-          items: ["SX / IX distribution", "Precipitation yield", "Impurity deportment"],
-        },
-        {
-          k: "Recovery & recycle",
-          checks: "15 / 20",
-          pass: 15,
-          total: 20,
-          d: "Black mass, magnets, shredder residue, tailings, e-waste. Feed clustering, yield, and carryover when the inbound stream will not sit still.",
-          items: ["Feed characterization", "Secondary recovery", "Grade vs. recovery"],
-        },
-      ];
-      return (
-        <section id="applications" className="scroll-mt-24 border-t border-white/10">
-          <div className="mx-auto max-w-6xl px-5 py-20 md:px-6 md:py-28">
-            <p className="text-xs font-medium uppercase tracking-[0.22em] text-amber-400">Applications</p>
-            <h2 className="mt-4 max-w-2xl font-serif text-3xl tracking-tight md:text-4xl">Three application families. Seven domains underneath.</h2>
-            <p className="mt-4 max-w-2xl text-slate-400">
-              Rare earths, battery materials, strategic metals, scrap, and tailings reprocessing. Check counts below are live, not targets.
-            </p>
-            <div className="mt-14 grid gap-5 md:grid-cols-3">
-              {cards.map((c) => (
-                <article key={c.k} className="flex flex-col rounded-xl border border-white/10 bg-white/[0.03] p-6 transition hover:border-amber-400/30">
-                  <div className="flex items-start justify-between gap-3">
-                    <h3 className="text-lg font-medium">{c.k}</h3>
-                    <span className="shrink-0 rounded-full border border-amber-400/30 bg-amber-400/10 px-2.5 py-0.5 text-xs text-amber-300">{c.checks} checks</span>
-                  </div>
-                  <p className="mt-4 text-sm leading-relaxed text-slate-400">{c.d}</p>
-                  <ul className="mt-5 space-y-2 text-sm text-slate-300">
-                    {c.items.map((i) => (
-                      <li key={i} className="flex items-center gap-2">
-                        <span className="h-1 w-1 rounded-full bg-amber-400" />
-                        {i}
-                      </li>
-                    ))}
-                  </ul>
-                  <div className="mt-6 flex flex-wrap gap-1" aria-hidden="true">
-                    {Array.from({ length: c.total }, (_, i) => (
-                      <span key={i} className={`h-1.5 w-1.5 rounded-[1px] ${i < c.pass ? "bg-amber-400" : "bg-white/15"}`} />
-                    ))}
-                  </div>
-                </article>
-              ))}
-            </div>
-          </div>
-        </section>
-      );
-    }
+      <p class="mt-12 text-sm text-neutral-400">
+        <a href="mailto:hello@pyral.ai" class="hover:text-amber-700 transition-colors">hello@pyral.ai</a>
+      </p>
+    </div>
+  </section>
 
-    function Evidence() {
-      const domains = [
-        "Leaching kinetics",
-        "Solvent extraction",
-        "Precipitation & crystallization",
-        "Impurity deportment",
-        "Thermal processing",
-        "Electrochemical recovery",
-        "Feed characterization",
-      ];
-      return (
-        <section id="evidence" className="scroll-mt-24 border-t border-white/10 bg-slate-950/40">
-          <div className="mx-auto max-w-6xl px-5 py-20 md:px-6 md:py-28">
-            <p className="text-xs font-medium uppercase tracking-[0.22em] text-amber-400">Evidence</p>
-            <h2 className="mt-4 font-serif text-3xl tracking-tight md:text-4xl">42 of 53 physics checks pass.</h2>
-            <p className="mt-4 max-w-2xl text-slate-400">
-              Eleven fail. They are listed internally and tracked in the open on every engagement. We would rather show a gap than a badge we did not earn.
-            </p>
+  <footer class="py-10 px-6 border-t border-neutral-100">
+    <div class="max-w-5xl mx-auto flex items-center justify-between">
+      <div class="flex items-center gap-2">
+        <svg class="w-4 h-4" viewBox="0 0 32 32" fill="none">
+          <polygon points="16,2 28,10 28,22 16,30 4,22 4,10" fill="none" stroke="#B45309" stroke-width="2"/>
+        </svg>
+        <span class="text-xs text-neutral-400 tracking-widest">PYRAL</span>
+      </div>
+      <span class="text-xs text-neutral-400">© 2026</span>
+    </div>
+  </footer>
 
-            <div className="mt-12 grid gap-6 md:grid-cols-3">
-              {[
-                { k: "42 / 53", l: "Physics consistency checks passing" },
-                { k: "35", l: "Prediction heads on the CriticalPath model" },
-                { k: "7", l: "Process domains, trained per circuit" },
-              ].map((s) => (
-                <div key={s.l} className="rounded-xl border border-white/10 px-6 py-7">
-                  <p className="font-serif text-4xl text-amber-400 md:text-5xl">{s.k}</p>
-                  <p className="mt-3 text-sm text-slate-400">{s.l}</p>
-                </div>
-              ))}
-            </div>
-
-            <div className="mt-10 rounded-xl border border-white/10 p-6 md:p-8">
-              <div className="flex flex-wrap items-end justify-between gap-4">
-                <div>
-                  <p className="text-sm font-medium text-white">Physics audit grid</p>
-                  <p className="mt-1 text-xs text-slate-500">Amber = passing. Hollow = failing or incomplete. 53 cells.</p>
-                </div>
-                <p className="text-xs text-slate-500">Mass · charge · bounds · phase · stoichiometry</p>
-              </div>
-              <div className="mt-6 flex flex-wrap gap-1.5" role="img" aria-label="42 of 53 physics checks passing">
-                {Array.from({ length: 53 }, (_, i) => (
-                  <span
-                    key={i}
-                    className={`h-3 w-3 rounded-[2px] sm:h-3.5 sm:w-3.5 ${i < 42 ? "bg-amber-400" : "border border-white/20 bg-transparent"}`}
-                  />
-                ))}
-              </div>
-              <div className="mt-8 grid gap-2 sm:grid-cols-2 lg:grid-cols-4">
-                {domains.map((d) => (
-                  <p key={d} className="text-sm text-slate-300">
-                    <span className="mr-2 text-amber-400/80">▸</span>
-                    {d}
-                  </p>
-                ))}
-              </div>
-              <p className="mt-8 max-w-3xl text-sm leading-relaxed text-slate-400">
-                Checks cover conservation of mass and charge, thermodynamic feasibility, phase-rule consistency, and stoichiometric closure on each head. A prediction that fails a check is not shown as a recommendation. That is the product.
-              </p>
-            </div>
-          </div>
-        </section>
-      );
-    }
-
-    function Pricing() {
-      const tiers = [
-        {
-          name: "Assessment",
-          price: "$25K",
-          note: "Fixed",
-          featured: false,
-          points: [
-            "2–3 week diagnostic on one circuit",
-            "Process characterization and baseline model",
-            "Ranked experiment list with physics audit",
-            "You keep the written report",
-          ],
-        },
-        {
-          name: "Pilot",
-          price: "$75–150K",
-          note: "One domain, one campaign",
-          featured: true,
-          points: [
-            "Production data, closed-loop ranking",
-            "Model training on your historian and assays",
-            "Operator workflow for the next campaign",
-            "Full physics audit of heads in scope",
-          ],
-        },
-        {
-          name: "Annual",
-          price: "$120–300K",
-          note: "Per year",
-          featured: false,
-          points: [
-            "CriticalPath on the live flowsheet",
-            "Heads relevant to your circuit, retrained",
-            "Quarterly physics audit",
-            "Dedicated technical contact",
-          ],
-        },
-      ];
-      return (
-        <section id="pricing" className="scroll-mt-24 border-t border-white/10">
-          <div className="mx-auto max-w-6xl px-5 py-20 md:px-6 md:py-28">
-            <p className="text-xs font-medium uppercase tracking-[0.22em] text-amber-400">Pricing</p>
-            <h2 className="mt-4 font-serif text-3xl tracking-tight md:text-4xl">Straightforward commercial terms.</h2>
-            <p className="mt-4 max-w-2xl text-slate-400">
-              Ranges depend on circuit complexity, data quality, and the number of domains in scope. No usage metering on predictions.
-            </p>
-            <div className="mt-14 grid gap-5 lg:grid-cols-3">
-              {tiers.map((t) => (
-                <article
-                  key={t.name}
-                  className={`flex flex-col rounded-xl border p-6 md:p-7 ${t.featured ? "border-amber-400/50 bg-amber-400/[0.06]" : "border-white/10 bg-white/[0.02]"}`}
-                >
-                  <div className="flex items-baseline justify-between">
-                    <h3 className="text-sm font-medium uppercase tracking-[0.14em] text-slate-300">{t.name}</h3>
-                    {t.featured && <span className="text-[11px] text-amber-300">Typical first engagement</span>}
-                  </div>
-                  <p className="mt-5 font-serif text-4xl text-white">{t.price}</p>
-                  <p className="mt-1 text-sm text-slate-500">{t.note}</p>
-                  <ul className="mt-6 flex-1 space-y-3 text-sm text-slate-300">
-                    {t.points.map((p) => (
-                      <li key={p} className="flex gap-2.5">
-                        <span className="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-amber-400" />
-                        {p}
-                      </li>
-                    ))}
-                  </ul>
-                  <a href="#contact" className={`mt-8 rounded-md px-4 py-2.5 text-center text-sm font-medium transition ${t.featured ? "bg-amber-400 text-slate-900 hover:bg-amber-300" : "border border-white/15 text-white hover:border-white/30"}`}>
-                    Talk to us
-                  </a>
-                </article>
-              ))}
-            </div>
-          </div>
-        </section>
-      );
-    }
-
-    function Founder() {
-      return (
-        <section id="founder" className="scroll-mt-24 border-t border-white/10 bg-slate-950/40">
-          <div className="mx-auto grid max-w-6xl items-start gap-12 px-5 py-20 md:grid-cols-12 md:px-6 md:py-28">
-            <div className="md:col-span-4">
-              <p className="text-xs font-medium uppercase tracking-[0.22em] text-amber-400">Founder</p>
-              <div className="mt-8 flex items-center gap-4">
-                <div className="flex h-16 w-16 items-center justify-center rounded-lg border border-amber-400/30 bg-amber-400/10 font-serif text-xl text-amber-300">MJ</div>
-                <div>
-                  <h2 className="text-xl font-medium">Mike Jacobs</h2>
-                  <p className="text-sm text-slate-400">Founder, Pyral</p>
-                </div>
-              </div>
-              <dl className="mt-8 space-y-3 text-sm">
-                <div className="flex justify-between gap-4 border-b border-white/10 py-2">
-                  <dt className="text-slate-500">Training</dt>
-                  <dd className="text-slate-200">CS, UC Berkeley</dd>
-                </div>
-                <div className="flex justify-between gap-4 border-b border-white/10 py-2">
-                  <dt className="text-slate-500">Service</dt>
-                  <dd className="text-slate-200">United States Marine Corps</dd>
-                </div>
-                <div className="flex justify-between gap-4 border-b border-white/10 py-2">
-                  <dt className="text-slate-500">Prior</dt>
-                  <dd className="text-right text-slate-200">Defense AI deployment</dd>
-                </div>
-              </dl>
-            </div>
-            <div className="md:col-span-8 md:pt-10">
-              <h3 className="font-serif text-2xl leading-snug tracking-tight md:text-3xl">
-                Materials programs fail the way software programs used to: no feedback loop between experiment and model, and no one accountable for the next run.
-              </h3>
-              <p className="mt-6 max-w-2xl text-[15px] leading-relaxed text-slate-400">
-                Jacobs built and deployed machine-learning systems in defense, then watched critical-minerals and recycling teams make large experimental bets without a posterior. Pyral is the disciplined version of that loop — physics-checked, ranked, and scoped to the circuit you actually run. The tone is technical because the work is.
-              </p>
-            </div>
-          </div>
-        </section>
-      );
-    }
-
-    function Contact() {
-      const [form, setForm] = useState({ name: "", email: "", company: "", role: "", message: "" });
-      const [sent, setSent] = useState(false);
-      const [error, setError] = useState("");
-
-      const onChange = (e) => setForm((f) => ({ ...f, [e.target.name]: e.target.value }));
-
-      const onSubmit = (e) => {
-        e.preventDefault();
-        if (!form.name.trim() || !form.email.trim() || !form.company.trim()) {
-          setError("Name, email, and company are required.");
-          return;
-        }
-        setError("");
-        setSent(true);
-      };
-
-      return (
-        <section id="contact" className="scroll-mt-24 border-t border-white/10">
-          <div className="mx-auto grid max-w-
+  <script>
+    const o = new IntersectionObserver(e => e.forEach(x => { if(x.isIntersecting) x.target.classList.add('v') }), {threshold:.1});
+    document.querySelectorAll('.fade-in').forEach(e => o.observe(e));
+  </script>
+</body>
+</html>
