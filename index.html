@@ -1,770 +1,543 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="scroll-smooth">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#1a1a2e">
-  <title>The Quest for Flight — University School (USAI)</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pyral — Find the next experiment worth running</title>
+  <meta name="description" content="CriticalPath is materials intelligence from Pyral. 35 prediction heads, 7 domains, 42 of 53 physics checks passing. Rank the next experiment worth running." />
+  <meta name="theme-color" content="#0f172a" />
+  <meta property="og:title" content="Pyral — Find the next experiment worth running" />
+  <meta property="og:description" content="Materials intelligence AI. CriticalPath models your process, checks it against physics, and ranks the experiments that move yield, recovery, and cost." />
+  <meta property="og:type" content="website" />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'%3E%3Cpath d='M24 4L42 16L24 22L6 16Z' fill='%23FCD34D'/%3E%3Cpath d='M6 16L24 22L24 44L6 32Z' fill='%23B45309'/%3E%3Cpath d='M42 16L24 22L24 44L42 32Z' fill='%23D97706'/%3E%3C/svg%3E" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ["Inter", "system-ui", "sans-serif"],
+            serif: ["Newsreader", "Georgia", "serif"],
+          },
+          colors: {
+            slate: { 950: "#0b1220" },
+          },
+        },
+      },
+    };
+  </script>
   <style>
-    :root {
-      color-scheme: dark;
-      --bg: #1a1a2e;
-      --panel: #24243c;
-      --amber: #d4a574;
-      --amber-light: #f1ce9f;
-      --text: #f3eee7;
-      --muted: #bbb5bf;
-      --border: #515067;
-      --success: #a5ddb4;
-      --error: #ffc1af;
-      --sepia: #342a25;
-      --radius: 16px;
-    }
-
-    * { box-sizing: border-box; }
-    body {
-      margin: 0;
-      min-height: 100vh;
-      min-height: 100svh;
-      background: var(--bg);
-      color: var(--text);
-      font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
-      line-height: 1.6;
-    }
-    button { font: inherit; }
-    button:focus-visible, [tabindex="-1"]:focus-visible {
-      outline: 3px solid var(--amber-light);
-      outline-offset: 5px;
-    }
-    button {
-      cursor: pointer;
-      touch-action: manipulation;
-    }
-    button:disabled { cursor: default; }
-    [hidden] { display: none !important; }
-
-    .shell {
-      width: min(800px, calc(100% - 32px));
-      margin: 0 auto;
-    }
-    .topbar {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 16px;
-      padding: 20px 0;
-      border-bottom: 1px solid var(--border);
-      font-size: .8rem;
-      letter-spacing: .06em;
-    }
-    .brand { color: var(--amber); font-weight: 800; }
-    .sound {
-      color: var(--muted);
-      background: transparent;
-      border: 1px solid var(--border);
-      border-radius: 20px;
-      padding: 6px 12px;
-      font-size: .8rem;
-    }
-    main { position: relative; }
-    .screen {
-      display: none;
-      flex-direction: column;
-      gap: 24px;
-      padding: 36px 0;
-      min-height: 650px;
-      opacity: 0;
-      transition: opacity .5s ease;
-    }
-    .screen.active { display: flex; }
-    .screen.visible { opacity: 1; }
-    h1, h2, h3, p { margin: 0; }
-    h1, h2, h3 { line-height: 1.2; }
-    h1, h2 {
-      font-family: Georgia, "Times New Roman", serif;
-      color: var(--amber);
-    }
-    h1 { font-size: clamp(3rem, 9vw, 5.5rem); }
-    h2 { font-size: clamp(1.8rem, 5vw, 2.7rem); }
-    h3 { font-size: 1.15rem; }
-    .eyebrow {
-      color: var(--amber);
-      text-transform: uppercase;
-      letter-spacing: .16em;
-      font-size: .75rem;
-      font-weight: 800;
-    }
-    .muted { color: var(--muted); }
-    .primary, .secondary {
-      align-self: flex-start;
-      border-radius: 10px;
-      padding: 12px 22px;
-      font-weight: 750;
-      transition: transform .2s, background .2s, box-shadow .2s;
-    }
-    .primary {
-      background: var(--amber);
-      border: 1px solid var(--amber);
-      color: var(--bg);
-    }
-    .secondary {
-      background: transparent;
-      border: 1px solid var(--amber);
-      color: var(--amber-light);
-    }
-    button:not(:disabled):hover { transform: translateY(-2px); }
-    .primary:not(:disabled):hover {
-      background: var(--amber-light);
-      box-shadow: 0 4px 24px #d4a57435;
-    }
-    .panel {
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 24px;
-      background: var(--panel);
-    }
-    .navigator {
-      position: relative;
-      border-left: 3px solid var(--amber);
-      background: #d4a5740d;
-      border-radius: 0 var(--radius) var(--radius) var(--radius);
-      padding: 20px 24px;
-    }
-    .navigator strong {
-      display: block;
-      color: var(--amber-light);
-      margin-bottom: 8px;
-      font-size: .9rem;
-    }
-
-    /* Title and drifting workshop dust. */
-    #title {
-      justify-content: center;
-      align-items: center;
-      text-align: center;
-      position: relative;
-      overflow: hidden;
-      isolation: isolate;
-    }
-    #title .primary { align-self: center; }
-    .glow { box-shadow: 0 0 30px #d4a57445; }
-    .particles {
-      position: absolute;
-      inset: 0;
-      z-index: -1;
-      pointer-events: none;
-    }
-    .dust {
-      position: absolute;
-      bottom: -20px;
-      left: var(--x);
-      width: var(--size);
-      height: var(--size);
-      background: var(--amber-light);
-      border-radius: 50%;
-      opacity: 0;
-      animation: drift var(--duration) var(--delay) linear infinite;
-    }
-    @keyframes drift {
-      0% { transform: translate(0, 0); opacity: 0; }
-      15%, 70% { opacity: .35; }
-      100% { transform: translate(65px, -680px); opacity: 0; }
-    }
-
-    .workshop {
-      background:
-        radial-gradient(ellipse at top right, #d4a57428, transparent 65%),
-        repeating-linear-gradient(0deg, transparent 0 30px, #d4a57408 31px 32px),
-        var(--sepia);
-      border-color: #8b715b;
-    }
-    .workshop p + p { margin-top: 16px; }
-    .workshop .scene-icon {
-      display: block;
-      font-size: 3rem;
-      margin-bottom: 14px;
-      color: var(--amber);
-    }
-    .answers { display: grid; gap: 12px; }
-    .answer {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-      width: 100%;
-      text-align: left;
-      padding: 16px;
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      background: var(--panel);
-      color: var(--text);
-      transition: border-color .2s, background .2s, transform .2s;
-    }
-    .answer:not(:disabled):hover { border-color: var(--amber); }
-    .letter {
-      display: grid;
-      place-items: center;
-      flex: 0 0 32px;
-      height: 32px;
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      color: var(--amber);
-      font-weight: 700;
-    }
-    .answer.wrong { border-color: var(--error); }
-    .answer.correct {
-      border-color: var(--success);
-      background: #a5ddb412;
-    }
-    .answer:disabled:not(.correct) { opacity: .6; }
-    .feedback { min-height: 28px; }
-    .feedback.error { color: var(--error); }
-    .feedback.success { color: var(--success); }
-    .reward {
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      justify-content: space-between;
-      gap: 16px;
-      border-color: var(--amber);
-    }
-    .math {
-      font-family: Georgia, serif;
-      font-size: 1.8rem;
-      color: var(--amber-light);
-    }
-    .xp-pop {
-      display: inline-block;
-      font-weight: 800;
-      color: var(--amber-light);
-      animation: reward-pop .8s ease both;
-    }
-    @keyframes reward-pop {
-      from { transform: translateY(20px) scale(.8); opacity: 0; }
-      65% { transform: translateY(-4px) scale(1.12); opacity: 1; }
-      to { transform: translateY(0) scale(1); opacity: 1; }
-    }
-    .xp-label {
-      display: flex;
-      justify-content: space-between;
-      flex-wrap: wrap;
-      gap: 8px;
-      font-size: .85rem;
-      margin-bottom: 8px;
-    }
-    progress {
-      display: block;
-      width: 100%;
-      height: 12px;
-      appearance: none;
-      border: 0;
-      border-radius: 20px;
-      overflow: hidden;
-      background: var(--panel);
-      accent-color: var(--amber);
-    }
-    progress::-webkit-progress-bar { background: var(--panel); }
-    progress::-webkit-progress-value { background: var(--amber); }
-    progress::-moz-progress-bar { background: var(--amber); }
-
-    /* Six absolute-positioned nodes with SVG connections. */
-    .tree {
-      position: relative;
-      height: 380px;
-      margin: 4px 0;
-    }
-    .tree svg {
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      overflow: visible;
-      pointer-events: none;
-    }
-    .tree line { stroke: var(--border); stroke-width: 2; }
-    .node {
-      position: absolute;
-      transform: translate(-50%, -50%);
-      width: 29%;
-      max-width: 175px;
-      min-height: 76px;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      gap: 4px;
-      text-align: center;
-      padding: 10px 6px;
-      background: var(--panel);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      color: var(--muted);
-      font-size: .85rem;
-      line-height: 1.3;
-    }
-    .node small { font-size: .65rem; opacity: .8; }
-    .node.locked { opacity: .65; }
-    .node.unlocked {
-      color: var(--amber-light);
-      border-color: var(--amber);
-      box-shadow: 0 0 24px #d4a57435;
-    }
-    .paths { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-    .path {
-      display: flex;
-      flex-direction: column;
-      align-items: flex-start;
-      gap: 16px;
-      text-align: left;
-      color: var(--text);
-      min-height: 260px;
-      transition: transform .2s, border-color .2s;
-    }
-    .path:hover { border-color: var(--amber); }
-    .path-icon { font-size: 3rem; }
-    .path-title { font-size: 1.3rem; font-weight: 800; }
-    .path-subtitle { color: var(--amber); }
-    .ending { text-align: center; }
-    .ending h3 { color: var(--amber); font-family: Georgia, serif; font-size: 2rem; }
-    footer {
-      border-top: 1px solid var(--border);
-      padding: 20px 0;
-      text-align: center;
-      font-size: .75rem;
-      color: var(--muted);
-    }
-    @media (max-width: 520px) {
-      .screen { padding: 28px 0; min-height: 600px; gap: 20px; }
-      .panel { padding: 18px; }
-      .paths { grid-template-columns: 1fr; gap: 12px; }
-      .path { min-height: auto; gap: 10px; }
-      .path-icon { font-size: 2rem; }
-      .node { font-size: .72rem; }
-      .topbar { font-size: .7rem; }
-    }
+    html { color-scheme: dark; }
+    body { font-feature-settings: "ss01" on, "cv11" on; }
+    ::selection { background: #fbbf24; color: #0f172a; }
+    .font-serif { font-optical-sizing: auto; }
     @media (prefers-reduced-motion: reduce) {
-      .dust { animation: none; }
-      .xp-pop { animation: none; }
-      .screen, button { transition: none !important; }
-      button:not(:disabled):hover { transform: none; }
+      html { scroll-behavior: auto; }
+      * { transition: none !important; animation: none !important; }
     }
   </style>
 </head>
-<body>
-  <div class="shell">
-    <header class="topbar">
-      <span class="brand">UNIVERSITY SCHOOL · USAI</span>
-      <button class="sound" id="sound-toggle" type="button" aria-pressed="true">
-        Sound: On
-      </button>
-    </header>
+<body class="bg-slate-900 text-white antialiased font-sans">
+  <div id="root"></div>
 
-    <main id="game">
-      <section id="title" class="screen active visible" aria-labelledby="title-heading">
-        <div class="particles" id="particles" aria-hidden="true"></div>
-        <p class="eyebrow">An engineering RPG · Chapter I</p>
-        <h1 id="title-heading" tabindex="-1">The Quest<br>for Flight</h1>
-        <p style="font-size: 1.25rem;">A University School Quest</p>
-        <p class="muted">Play as Orville Wright.<br>Question the data. Master the physics. Earn your wings.</p>
-        <button class="primary glow" type="button" data-screen="workshop">Begin Quest →</button>
-        <p class="muted" style="font-size: .8rem;">Real aerospace concepts. An adventure in discovery.</p>
-      </section>
+  <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 
-      <section id="workshop" class="screen" aria-labelledby="workshop-heading" aria-hidden="true">
-        <p class="eyebrow">Dayton, Ohio · 1901 · Orville Wright</p>
-        <h2 id="workshop-heading" tabindex="-1">The Workshop</h2>
-        <div class="panel workshop">
-          <span class="scene-icon" aria-hidden="true">⚙</span>
-          <p>Afternoon light slips through dusty windows. Bicycle chains hang above a workbench crowded with wing sketches, brass instruments, and curls of wood.</p>
-          <p>Your brother Wilbur sets another notebook beside the small wooden wind tunnel. The fan hums. The balance trembles. Once again, the measured lift falls short of the prediction.</p>
-          <p><em>You are Orville Wright. Before you can conquer the sky, you must learn which numbers to trust.</em></p>
-        </div>
-        <aside class="navigator" aria-label="AI Navigator">
-          <strong>Professor Langley · AI Navigator</strong>
-          <p>Welcome to Dayton, 1901. Your wind tunnel data doesn't match Smeaton's coefficient. Find the error.</p>
-        </aside>
-        <button class="primary" type="button" data-screen="challenge">Examine the Wind Tunnel Data →</button>
-      </section>
+  <script type="text/babel">
+    const { useState, useEffect } = React;
 
-      <section id="challenge" class="screen" aria-labelledby="challenge-heading" aria-hidden="true">
-        <p class="eyebrow">Encounter 01 · Model calibration · Reward: 250 XP</p>
-        <h2 id="challenge-heading" tabindex="-1">THE SMEATON COEFFICIENT</h2>
-        <div class="panel">
-          <p>Your wind tunnel predicts 100N of lift using Smeaton's coefficient, but you measure only 66N under identical conditions.</p>
-          <p class="muted" style="margin-top: 12px;">Lift is proportional to k when all other variables are held constant. How should you adjust k?</p>
-        </div>
-        <div class="answers" id="smeaton-answers" role="group" aria-label="Coefficient adjustments">
-          <button class="answer" type="button" data-answer="0"><span class="letter">A</span><span>Multiply k by 1.34</span></button>
-          <button class="answer" type="button" data-answer="1"><span class="letter">B</span><span>Multiply k by 0.66</span></button>
-          <button class="answer" type="button" data-answer="2"><span class="letter">C</span><span>Add a 34N correction factor</span></button>
-          <button class="answer" type="button" data-answer="3"><span class="letter">D</span><span>Divide k by 2</span></button>
-        </div>
-        <div class="feedback" id="smeaton-feedback" role="status" aria-live="polite"></div>
-        <div class="panel reward" id="smeaton-reward" hidden>
-          <div>
-            <div class="math">66 ÷ 100 = 0.66</div>
-            <p class="muted">k<sub>new</sub> = 0.66 × k<sub>old</sub></p>
-          </div>
-          <span class="xp-pop">+250 XP</span>
-          <p class="muted" style="width: 100%; font-size: .85rem;">Precision note: these rounded values make the original coefficient about 51.5% too high relative to the corrected value; “~60%” is a rough historical characterization.</p>
-        </div>
-        <button class="primary" id="view-skills" type="button" data-screen="skills" hidden>Unlock Your Skill Tree →</button>
-      </section>
-
-      <section id="skills" class="screen" aria-labelledby="skills-heading" aria-hidden="true">
-        <div>
-          <div class="xp-label"><span class="level-label">Level 1 · Apprentice Aviator</span><span class="xp-text">250 / 1000 XP</span></div>
-          <progress class="xp-bar" value="250" max="1000" aria-label="Experience toward next level">250 / 1000</progress>
-        </div>
-        <h2 id="skills-heading" tabindex="-1">Your Engineering Skill Tree</h2>
-        <p class="muted">A reliable model is the foundation of flight. Your first skill is unlocked.</p>
-        <div class="tree" role="img" aria-label="Skill tree: Model Calibration unlocked. Connected skills Lift Analysis, Experimental Design, Wind Tunnel Testing, Wing Geometry, and Propulsion are locked.">
-          <svg viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
-            <line x1="50" y1="12" x2="22" y2="47"/>
-            <line x1="50" y1="12" x2="78" y2="47"/>
-            <line x1="22" y1="47" x2="16" y2="84"/>
-            <line x1="22" y1="47" x2="50" y2="84"/>
-            <line x1="78" y1="47" x2="50" y2="84"/>
-            <line x1="78" y1="47" x2="84" y2="84"/>
-          </svg>
-          <div class="node unlocked" style="left:50%;top:12%;">Model Calibration<small>✦ UNLOCKED</small></div>
-          <div class="node locked" style="left:22%;top:47%;">Lift Analysis<small>LOCKED</small></div>
-          <div class="node locked" style="left:78%;top:47%;">Experimental Design<small>LOCKED</small></div>
-          <div class="node locked" style="left:16%;top:84%;">Wind Tunnel Testing<small>LOCKED</small></div>
-          <div class="node locked" style="left:50%;top:84%;">Wing Geometry<small>LOCKED</small></div>
-          <div class="node locked" style="left:84%;top:84%;">Propulsion<small>LOCKED</small></div>
-        </div>
-        <button class="primary" type="button" data-screen="branch">Choose Your Next Encounter →</button>
-      </section>
-
-      <section id="branch" class="screen" aria-labelledby="branch-heading" aria-hidden="true">
-        <p class="eyebrow">The campaign branches</p>
-        <h2 id="branch-heading" tabindex="-1">Choose Your Path</h2>
-        <p class="muted">The coefficient is corrected. Now decide what to investigate next.</p>
-        <div class="paths">
-          <button class="panel path" type="button" data-path="investigate">
-            <span class="path-icon" aria-hidden="true">📊</span>
-            <span class="path-title">Investigate the Data</span>
-            <span class="path-subtitle">→ Experimental Design path</span>
-            <span class="muted">Discover how airflow scales from a wind-tunnel model to a flying machine.</span>
-          </button>
-          <button class="panel path" type="button" data-path="redesign">
-            <span class="path-icon" aria-hidden="true">✈️</span>
-            <span class="path-title">Redesign the Wing</span>
-            <span class="path-subtitle">→ Wing Geometry path</span>
-            <span class="muted">Explore how wing proportions influence the aerodynamic cost of lift.</span>
-          </button>
-        </div>
-        <aside class="navigator">
-          <strong>Professor Langley · AI Navigator</strong>
-          <p>Both paths lead toward flight. Will you refine your experiment or rethink your design?</p>
-        </aside>
-      </section>
-
-      <section id="next" class="screen" aria-labelledby="next-heading" aria-hidden="true">
-        <div>
-          <div class="xp-label"><span class="level-label">Level 1 · Apprentice Aviator</span><span class="xp-text">250 / 1000 XP</span></div>
-          <progress class="xp-bar" value="250" max="1000" aria-label="Experience toward next level">250 / 1000</progress>
-        </div>
-        <p class="eyebrow" id="path-label">Encounter 02 · Reward: 200 XP</p>
-        <h2 id="next-heading" tabindex="-1">The Next Challenge</h2>
-        <div class="panel">
-          <p id="next-question"></p>
-          <p id="next-context" class="muted" style="margin-top:12px;"></p>
-        </div>
-        <div class="answers" id="next-answers" role="group" aria-label="Next challenge answers"></div>
-        <aside class="navigator">
-          <strong>Professor Langley · AI Navigator</strong>
-          <p id="next-feedback" role="status" aria-live="polite">Choose your answer. Let the physics guide you.</p>
-        </aside>
-        <div class="panel ending" id="ending" hidden>
-          <span class="xp-pop">+200 XP</span>
-          <h3 style="margin:12px 0;">Quest Continues...</h3>
-          <p id="ending-summary"></p>
-          <p class="muted" style="margin-top:8px;">The sky is not yet yours—but the science is taking shape.</p>
-        </div>
-        <button class="secondary" id="restart" type="button" hidden>Play Again · Explore Another Path</button>
-      </section>
-    </main>
-
-    <footer>The Quest for Flight · University School (USAI)<br>A fictionalized educational adventure. Navigator dialogue is scripted for this demo.</footer>
-  </div>
-
-  <noscript>
-    <p style="padding:24px;text-align:center;">Please enable JavaScript to play The Quest for Flight.</p>
-  </noscript>
-
-  <script>
-    "use strict";
-
-    const state = {
-      screen: "title",
-      xp: 0,
-      level: 1,
-      skills: [],
-      path: null,
-      completed: { smeaton: false, next: false },
-      sound: true
-    };
-
-    const $ = (selector) => document.querySelector(selector);
-    const $$ = (selector) => document.querySelectorAll(selector);
-    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
-    let transitioning = false;
-    let audioContext = null;
-
-    const challenges = {
-      investigate: {
-        title: "Read the Airflow",
-        path: "Experimental Design",
-        question: "What dimensionless number determines whether airflow over the wing is laminar or turbulent?",
-        context: "Identify the ratio of inertial forces to viscous forces.",
-        options: ["Mach Number", "Reynolds Number", "Froude Number", "Aspect Ratio"],
-        correct: 1,
-        wrong: [
-          "Mach number compares flow speed with the speed of sound. Look for the balance between inertia and viscosity.",
-          "",
-          "Froude number compares inertia with gravity. Here, viscosity is the key competing effect.",
-          "Aspect ratio describes wing geometry. We need a dimensionless measure of the flow itself."
-        ],
-        feedback: "Correct! Reynolds Number, Re = ρVL/μ, compares inertia with viscosity. It is a key indicator of flow regime; transition also depends on surface roughness, disturbances, and pressure gradients."
-      },
-      redesign: {
-        title: "Shape the Wing",
-        path: "Wing Geometry",
-        question: "Doubling the wing's aspect ratio while keeping area constant will:",
-        context: "Assume the same lift coefficient, dynamic pressure, and span efficiency. Consider induced drag only.",
-        options: [
-          "Double induced drag",
-          "Leave induced drag unchanged",
-          "Reduce induced drag by approximately half",
-          "Eliminate all aerodynamic drag"
-        ],
-        correct: 2,
-        wrong: [
-          "Higher aspect ratio reduces induced drag under these assumptions; it does not increase it.",
-          "Aspect ratio appears in the denominator of the induced-drag relation, so changing it matters.",
-          "",
-          "A longer, narrower wing still produces induced drag, and profile drag remains too."
-        ],
-        feedback: "Correct! Cᴅ,ᵢ = Cʟ² / (πeAR). With lift coefficient and span efficiency fixed, doubling aspect ratio halves induced drag. This does not mean total drag is halved."
-      }
-    };
-
-    function playSound(kind) {
-      if (!state.sound) return;
-      try {
-        const AudioContextClass = window.AudioContext || window.webkitAudioContext;
-        if (!AudioContextClass) return;
-        if (!audioContext) audioContext = new AudioContextClass();
-        if (audioContext.state === "suspended") {
-          audioContext.resume().catch(() => {});
-        }
-        const now = audioContext.currentTime;
-        const notes = kind === "chime" ? [523.25, 659.25, 783.99] : [420];
-        notes.forEach((frequency, index) => {
-          const oscillator = audioContext.createOscillator();
-          const gain = audioContext.createGain();
-          const start = now + index * .12;
-          const duration = kind === "chime" ? .55 : .075;
-          oscillator.type = "sine";
-          oscillator.frequency.setValueAtTime(frequency, start);
-          gain.gain.setValueAtTime(0, start);
-          gain.gain.linearRampToValueAtTime(kind === "chime" ? .09 : .035, start + .01);
-          gain.gain.exponentialRampToValueAtTime(.001, start + duration);
-          oscillator.connect(gain);
-          gain.connect(audioContext.destination);
-          oscillator.start(start);
-          oscillator.stop(start + duration + .02);
-          oscillator.onended = () => {
-            oscillator.disconnect();
-            gain.disconnect();
-          };
-        });
-      } catch (_) {
-        // Audio is optional; gameplay remains available if the browser blocks it.
-      }
+    function Crystal({ className = "w-8 h-8", id = "g" }) {
+      return (
+        <svg className={className} viewBox="0 0 48 48" fill="none" aria-hidden="true">
+          <defs>
+            <linearGradient id={id + "top"} x1="24" y1="4" x2="24" y2="22">
+              <stop stopColor="#FDE68A" />
+              <stop offset="1" stopColor="#F59E0B" />
+            </linearGradient>
+          </defs>
+          <path d="M24 4L42 16L24 22L6 16Z" fill={`url(#${id}top)`} />
+          <path d="M6 16L24 22L24 44L6 32Z" fill="#B45309" />
+          <path d="M42 16L24 22L24 44L42 32Z" fill="#D97706" />
+          <path d="M24 4L42 16L24 22L6 16Z" stroke="#FEF3C7" strokeWidth="0.8" fill="none" opacity="0.7" />
+          <path d="M24 4V44" stroke="#FEF3C7" strokeWidth="0.7" opacity="0.35" />
+          <path d="M6 16L24 22L42 16" stroke="#78350F" strokeWidth="0.6" opacity="0.4" />
+        </svg>
+      );
     }
 
-    document.addEventListener("click", (event) => {
-      const button = event.target.closest("button");
-      if (button && !button.disabled && button.id !== "sound-toggle") playSound("click");
-    }, true);
-
-    $("#sound-toggle").addEventListener("click", () => {
-      state.sound = !state.sound;
-      $("#sound-toggle").textContent = `Sound: ${state.sound ? "On" : "Off"}`;
-      $("#sound-toggle").setAttribute("aria-pressed", String(state.sound));
-      if (state.sound) playSound("click");
-    });
-
-    const wait = (milliseconds) => new Promise(resolve => setTimeout(resolve, milliseconds));
-
-    async function showScreen(id) {
-      if (transitioning || id === state.screen || !document.getElementById(id)) return;
-      transitioning = true;
-      const previous = document.getElementById(state.screen);
-      const next = document.getElementById(id);
-      previous.inert = true;
-      previous.classList.remove("visible");
-      await wait(reducedMotion.matches ? 0 : 500);
-      previous.classList.remove("active");
-      previous.setAttribute("aria-hidden", "true");
-
-      state.screen = id;
-      next.inert = false;
-      next.classList.add("active");
-      next.removeAttribute("aria-hidden");
-      // Flush the initial opacity before beginning the fade-in.
-      void next.offsetWidth;
-      next.classList.add("visible");
-      window.scrollTo({ top: 0, behavior: "instant" });
-      next.querySelector("h1, h2").focus({ preventScroll: true });
-      await wait(reducedMotion.matches ? 0 : 500);
-      transitioning = false;
-    }
-
-    $$("[data-screen]").forEach(button => {
-      button.addEventListener("click", () => {
-        if (transitioning) return;
-        const destination = button.dataset.screen;
-        if (["skills", "branch"].includes(destination) && !state.completed.smeaton) return;
-        showScreen(destination);
-      });
-    });
-
-    function updateXP() {
-      state.level = Math.floor(state.xp / 1000) + 1;
-      $$(".xp-text").forEach(label => {
-        label.textContent = `${state.xp} / 1000 XP`;
-      });
-      $$(".xp-bar").forEach(bar => {
-        bar.value = state.xp;
-        bar.textContent = `${state.xp} / 1000`;
-      });
-      $$(".level-label").forEach(label => {
-        label.textContent = `Level ${state.level} · Apprentice Aviator`;
-      });
-    }
-
-    function award(key, xp, skill) {
-      if (state.completed[key]) return;
-      state.completed[key] = true;
-      state.xp += xp;
-      if (!state.skills.includes(skill)) state.skills.push(skill);
-      updateXP();
-      playSound("chime");
-    }
-
-    const smeatonFeedback = [
-      "That would increase lift prediction further from measured value",
-      "Yes! 66/100 = 0.66. Smeaton's value was ~60% too high.",
-      "Additive corrections don't fix a proportional error",
-      "Too aggressive - you'd undershoot by 32%"
+    const NAV = [
+      { href: "#problem", label: "Problem" },
+      { href: "#how", label: "How it works" },
+      { href: "#applications", label: "Applications" },
+      { href: "#evidence", label: "Evidence" },
+      { href: "#pricing", label: "Pricing" },
+      { href: "#contact", label: "Contact" },
     ];
 
-    $("#smeaton-answers").addEventListener("click", (event) => {
-      const button = event.target.closest("[data-answer]");
-      if (!button || transitioning || state.completed.smeaton) return;
-      const index = Number(button.dataset.answer);
-      const correct = index === 1;
-      $$("#smeaton-answers .answer").forEach(answer => answer.classList.remove("wrong"));
-      button.classList.add(correct ? "correct" : "wrong");
-      $("#smeaton-feedback").className = `feedback ${correct ? "success" : "error"}`;
-      $("#smeaton-feedback").textContent = `Professor Langley: ${smeatonFeedback[index]}${correct ? "" : ". Try again."}`;
-      if (correct) {
-        award("smeaton", 250, "Model Calibration");
-        $$("#smeaton-answers button").forEach(answer => { answer.disabled = true; });
-        $("#smeaton-reward").hidden = false;
-        $("#view-skills").hidden = false;
-      }
-    });
+    function Nav() {
+      const [open, setOpen] = useState(false);
+      const [scrolled, setScrolled] = useState(false);
 
-    function prepareNext(path) {
-      state.path = path;
-      const challenge = challenges[path];
-      $("#next-heading").textContent = challenge.title;
-      $("#path-label").textContent = `Encounter 02 · ${challenge.path} · Reward: 200 XP`;
-      $("#next-question").textContent = challenge.question;
-      $("#next-context").textContent = challenge.context;
-      $("#next-feedback").textContent = "Choose your answer. Let the physics guide you.";
-      $("#next-answers").replaceChildren();
-      challenge.options.forEach((text, index) => {
-        const button = document.createElement("button");
-        button.type = "button";
-        button.className = "answer";
-        button.dataset.answer = String(index);
-        const letter = document.createElement("span");
-        letter.className = "letter";
-        letter.textContent = String.fromCharCode(65 + index);
-        const label = document.createElement("span");
-        label.textContent = text;
-        button.append(letter, label);
-        $("#next-answers").append(button);
-      });
+      useEffect(() => {
+        const onScroll = () => setScrolled(window.scrollY > 8);
+        onScroll();
+        window.addEventListener("scroll", onScroll, { passive: true });
+        return () => window.removeEventListener("scroll", onScroll);
+      }, []);
+
+      useEffect(() => {
+        document.body.style.overflow = open ? "hidden" : "";
+        return () => { document.body.style.overflow = ""; };
+      }, [open]);
+
+      return (
+        <header className={`fixed inset-x-0 top-0 z-50 transition-colors ${scrolled || open ? "bg-slate-900/90 backdrop-blur-md border-b border-white/10" : "border-b border-transparent"}`}>
+          <a href="#main" className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-3 focus:z-50 focus:bg-amber-400 focus:text-slate-900 focus:px-3 focus:py-1.5 focus:text-sm">Skip to content</a>
+          <div className="mx-auto flex max-w-6xl items-center justify-between px-5 py-4 md:px-6">
+            <a href="#top" className="flex items-center gap-2.5" onClick={() => setOpen(false)}>
+              <Crystal className="h-7 w-7" id="nav" />
+              <span className="text-[15px] font-medium tracking-tight">Pyral</span>
+            </a>
+            <nav className="hidden items-center gap-8 md:flex" aria-label="Primary">
+              {NAV.map((l) => (
+                <a key={l.href} href={l.href} className="text-sm text-slate-300 transition hover:text-white">{l.label}</a>
+              ))}
+              <a href="#contact" className="rounded-md bg-amber-400 px-3.5 py-1.5 text-sm font-medium text-slate-900 transition hover:bg-amber-300">Request assessment</a>
+            </nav>
+            <button
+              type="button"
+              className="inline-flex h-10 w-10 items-center justify-center rounded-md text-slate-200 md:hidden"
+              aria-label={open ? "Close menu" : "Open menu"}
+              aria-expanded={open}
+              onClick={() => setOpen((v) => !v)}
+            >
+              {open ? (
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path d="M6 6l12 12M18 6L6 18" /></svg>
+              ) : (
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path d="M4 7h16M4 12h16M4 17h16" /></svg>
+              )}
+            </button>
+          </div>
+          {open && (
+            <nav className="border-t border-white/10 bg-slate-900 px-5 py-6 md:hidden" aria-label="Mobile">
+              <div className="flex flex-col gap-1">
+                {NAV.map((l) => (
+                  <a key={l.href} href={l.href} onClick={() => setOpen(false)} className="rounded-md px-2 py-3 text-lg text-slate-200">{l.label}</a>
+                ))}
+                <a href="#contact" onClick={() => setOpen(false)} className="mt-3 rounded-md bg-amber-400 px-4 py-3 text-center font-medium text-slate-900">Request assessment</a>
+              </div>
+            </nav>
+          )}
+        </header>
+      );
     }
 
-    $$("[data-path]").forEach(button => {
-      button.addEventListener("click", () => {
-        if (transitioning || state.screen !== "branch") return;
-        prepareNext(button.dataset.path);
-        showScreen("next");
-      });
-    });
-
-    $("#next-answers").addEventListener("click", (event) => {
-      const button = event.target.closest("[data-answer]");
-      if (!button || transitioning || !state.path || state.completed.next) return;
-      const challenge = challenges[state.path];
-      const index = Number(button.dataset.answer);
-      const correct = index === challenge.correct;
-      $$("#next-answers .answer").forEach(answer => answer.classList.remove("wrong"));
-      button.classList.add(correct ? "correct" : "wrong");
-      $("#next-feedback").textContent = correct
-        ? challenge.feedback
-        : `${challenge.wrong[index]} Try again.`;
-
-      if (correct) {
-        award("next", 200, challenge.path);
-        $$("#next-answers button").forEach(answer => { answer.disabled = true; });
-        $("#ending-summary").textContent =
-          `${state.xp} XP earned · ${challenge.path} unlocked · Level ${state.level}`;
-        $("#ending").hidden = false;
-        $("#restart").hidden = false;
-      }
-    });
-
-    $("#restart").addEventListener("click", () => {
-      if (transitioning) return;
-      state.xp = 0;
-      state.level = 1;
-      state.skills = [];
-      state.path = null;
-      state.completed = { smeaton: false, next: false };
-      $$("#smeaton-answers button").forEach(button => {
-        button.disabled = false;
-        button.classList.remove("correct", "wrong");
-      });
-      $("#smeaton-feedback").textContent = "";
-      $("#smeaton-feedback").className = "feedback";
-      ["smeaton-reward", "view-skills", "ending", "restart"].forEach(id => {
-        document.getElementById(id).hidden = true;
-      });
-      updateXP();
-      showScreen("title");
-    });
-
-    for (let index = 0; index < 24; index++) {
-      const particle = document.createElement("span");
-      particle.className = "dust";
-      particle.style.setProperty("--x", `${Math.random() * 95}%`);
-      particle.style.setProperty("--size", `${2 + Math.random() * 3}px`);
-      particle.style.setProperty("--duration", `${12 + Math.random() * 14}s`);
-      particle.style.setProperty("--delay", `${-Math.random() * 26}s`);
-      $("#particles").append(particle);
+    function Hero() {
+      const rows = [
+        { n: "01", exp: "Fe³⁺ 0.15 M · 82 °C · 4 h", tag: "Δ recovery +2.1σ", good: true },
+        { n: "02", exp: "Grind P80 45 μm · pH 1.8", tag: "Δ impurity −1.4σ", good: true },
+        { n: "03", exp: "Recycle 12% · 95 °C", tag: "Low information", good: false },
+        { n: "04", exp: "Oxalic 1.2 eq · 25 °C", tag: "Mass balance fail", good: false },
+      ];
+      return (
+        <section id="top" className="relative overflow-hidden pt-28 md:pt-36">
+          <div className="pointer-events-none absolute inset-0" aria-hidden="true">
+            <div className="absolute -top-32 left-1/2 h-[520px] w-[520px] -translate-x-1/2 rounded-full bg-amber-500/10 blur-3xl" />
+            <div className="absolute right-[-80px] top-24 opacity-[0.07]">
+              <Crystal className="h-[420px] w-[420px]" id="heroBg" />
+            </div>
+          </div>
+          <div className="relative mx-auto grid max-w-6xl items-center gap-14 px-5 pb-20 md:grid-cols-12 md:px-6 md:pb-28">
+            <div className="md:col-span-7">
+              <p className="mb-5 text-xs font-medium uppercase tracking-[0.22em] text-amber-400">CriticalPath · Materials intelligence</p>
+              <h1 className="font-serif text-[2.55rem] leading-[1.12] tracking-tight text-white sm:text-5xl md:text-[3.5rem]">
+                Find the next experiment worth running
+              </h1>
+              <p className="mt-6 max-w-xl text-lg leading-relaxed text-slate-300">
+                CriticalPath models your circuit across 35 prediction heads, checks them against physics, and ranks the runs most likely to move yield, recovery, and cost. Built for critical minerals, recycling, and advanced materials.
+              </p>
+              <div className="mt-8 flex flex-wrap items-center gap-3">
+                <a href="#contact" className="rounded-md bg-amber-400 px-5 py-2.5 text-sm font-medium text-slate-900 transition hover:bg-amber-300">Request an assessment</a>
+                <a href="#evidence" className="rounded-md border border-white/15 px-5 py-2.5 text-sm text-slate-200 transition hover:border-white/30 hover:text-white">See the evidence</a>
+              </div>
+              <p className="mt-8 text-sm text-slate-400">35 heads · 7 domains · 42 of 53 physics checks passing</p>
+            </div>
+            <div className="md:col-span-5">
+              <div className="rounded-xl border border-white/10 bg-slate-950/60 p-5 shadow-2xl shadow-black/40 backdrop-blur">
+                <div className="mb-4 flex items-center justify-between">
+                  <span className="text-[11px] font-medium uppercase tracking-[0.18em] text-slate-400">Next experiments</span>
+                  <span className="rounded-full bg-amber-400/10 px-2 py-0.5 text-[11px] text-amber-300">ranked</span>
+                </div>
+                <ul className="space-y-3">
+                  {rows.map((r) => (
+                    <li key={r.n} className="flex items-start gap-3 border-t border-white/5 pt-3 first:border-0 first:pt-0">
+                      <span className="font-serif text-sm text-amber-400/90">{r.n}</span>
+                      <div className="min-w-0 flex-1">
+                        <p className="truncate text-sm text-slate-100">{r.exp}</p>
+                        <p className={`mt-0.5 text-xs ${r.good ? "text-amber-300/80" : "text-slate-500"}`}>{r.tag}</p>
+                      </div>
+                    </li>
+                  ))}
+                </ul>
+                <p className="mt-4 border-t border-white/5 pt-3 text-[11px] leading-relaxed text-slate-500">
+                  Expected-information ranking on your posterior. Failed physics checks are excluded, not averaged away.
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+      );
     }
 
-    $$(".screen:not(.active)").forEach(screen => { screen.inert = true; });
-    updateXP();
-  </script>
-</body>
-</html>
+    function Problem() {
+      return (
+        <section id="problem" className="scroll-mt-24 border-t border-white/10">
+          <div className="mx-auto max-w-6xl px-5 py-20 md:px-6 md:py-28">
+            <p className="text-xs font-medium uppercase tracking-[0.22em] text-amber-400">The problem</p>
+            <h2 className="mt-4 max-w-3xl font-serif text-3xl leading-snug tracking-tight md:text-4xl">
+              The bottleneck is not generating data. It is knowing which experiment to run next.
+            </h2>
+            <div className="mt-12 grid gap-8 md:grid-cols-3">
+              {[
+                {
+                  t: "The design space is combinatorial",
+                  d: "Reagent, temperature, grind, residence time, recycle ratio, redox. A leach campaign is often a six-figure point estimate. Spreadsheets do not search the surface.",
+                },
+                {
+                  t: "Simulation and ML miss the plant",
+                  d: "First-principles models are slow to fit and drift from historian data. Unconstrained ML will violate mass balance and still look confident on a dashboard.",
+                },
+                {
+                  t: "Last campaign never becomes a prior",
+                  d: "Assays, notebooks, and PI tags sit in files. Operators re-run failed conditions because nothing ranked the remaining uncertainty against cost.",
+                },
+              ].map((c) => (
+                <article key={c.t} className="border-t border-white/10 pt-6">
+                  <h3 className="text-base font-medium text-white">{c.t}</h3>
+                  <p className="mt-3 text-sm leading-relaxed text-slate-400">{c.d}</p>
+                </article>
+              ))}
+            </div>
+            <p className="mt-14 max-w-3xl text-base leading-relaxed text-slate-300">
+              Pyral does not sell a dashboard. We sell a ranked list of experiments, with the physics that survived contact with your data.
+            </p>
+          </div>
+        </section>
+      );
+    }
+
+    function HowItWorks() {
+      const steps = [
+        {
+          n: "01",
+          t: "Characterize",
+          d: "Ingest assays, historians, lab notebooks, and flowsheets. Feed chemistry, operating windows, and hard constraints become a structured process state.",
+        },
+        {
+          n: "02",
+          t: "Model",
+          d: "35 prediction heads across 7 domains: recovery, grade, impurity deportment, reagent use, kinetics, energy, and fouling. Fit to your data, regularized by physics.",
+        },
+        {
+          n: "03",
+          t: "Prioritize",
+          d: "Each candidate run is scored by expected information on the variables that move yield and cost. You see why a point is next — not a black-box suggestion.",
+        },
+        {
+          n: "04",
+          t: "Validate",
+          d: "53 physics and conservation checks: mass, charge, thermodynamic bounds, phase rules. 42 pass. The remaining 11 are documented, not hidden.",
+        },
+      ];
+      return (
+        <section id="how" className="scroll-mt-24 border-t border-white/10 bg-slate-950/40">
+          <div className="mx-auto max-w-6xl px-5 py-20 md:px-6 md:py-28">
+            <p className="text-xs font-medium uppercase tracking-[0.22em] text-amber-400">How it works</p>
+            <h2 className="mt-4 font-serif text-3xl tracking-tight md:text-4xl">Characterize → Model → Prioritize → Validate</h2>
+            <p className="mt-4 max-w-2xl text-slate-400">A closed loop between plant data and the next run. No stage is optional.</p>
+            <div className="mt-14 grid gap-10 sm:grid-cols-2 lg:grid-cols-4">
+              {steps.map((s) => (
+                <article key={s.n}>
+                  <p className="font-serif text-3xl text-amber-400/90">{s.n}</p>
+                  <h3 className="mt-4 text-lg font-medium">{s.t}</h3>
+                  <p className="mt-3 text-sm leading-relaxed text-slate-400">{s.d}</p>
+                </article>
+              ))}
+            </div>
+          </div>
+        </section>
+      );
+    }
+
+    function Applications() {
+      const cards = [
+        {
+          k: "Extraction",
+          checks: "14 / 16",
+          pass: 14,
+          total: 16,
+          d: "Leach, roast-leach, pressure oxidation. Recovery, kinetics, acid balance, and gangue interactions on primary and refractory feeds.",
+          items: ["Leaching kinetics", "Acid & redox balance", "Gangue & impurity uptake"],
+        },
+        {
+          k: "Separation",
+          checks: "13 / 17",
+          pass: 13,
+          total: 17,
+          d: "Solvent extraction, ion exchange, precipitation, crystallization. Selectivity, distribution, crud, and capacity under plant constraints.",
+          items: ["SX / IX distribution", "Precipitation yield", "Impurity deportment"],
+        },
+        {
+          k: "Recovery & recycle",
+          checks: "15 / 20",
+          pass: 15,
+          total: 20,
+          d: "Black mass, magnets, shredder residue, tailings, e-waste. Feed clustering, yield, and carryover when the inbound stream will not sit still.",
+          items: ["Feed characterization", "Secondary recovery", "Grade vs. recovery"],
+        },
+      ];
+      return (
+        <section id="applications" className="scroll-mt-24 border-t border-white/10">
+          <div className="mx-auto max-w-6xl px-5 py-20 md:px-6 md:py-28">
+            <p className="text-xs font-medium uppercase tracking-[0.22em] text-amber-400">Applications</p>
+            <h2 className="mt-4 max-w-2xl font-serif text-3xl tracking-tight md:text-4xl">Three application families. Seven domains underneath.</h2>
+            <p className="mt-4 max-w-2xl text-slate-400">
+              Rare earths, battery materials, strategic metals, scrap, and tailings reprocessing. Check counts below are live, not targets.
+            </p>
+            <div className="mt-14 grid gap-5 md:grid-cols-3">
+              {cards.map((c) => (
+                <article key={c.k} className="flex flex-col rounded-xl border border-white/10 bg-white/[0.03] p-6 transition hover:border-amber-400/30">
+                  <div className="flex items-start justify-between gap-3">
+                    <h3 className="text-lg font-medium">{c.k}</h3>
+                    <span className="shrink-0 rounded-full border border-amber-400/30 bg-amber-400/10 px-2.5 py-0.5 text-xs text-amber-300">{c.checks} checks</span>
+                  </div>
+                  <p className="mt-4 text-sm leading-relaxed text-slate-400">{c.d}</p>
+                  <ul className="mt-5 space-y-2 text-sm text-slate-300">
+                    {c.items.map((i) => (
+                      <li key={i} className="flex items-center gap-2">
+                        <span className="h-1 w-1 rounded-full bg-amber-400" />
+                        {i}
+                      </li>
+                    ))}
+                  </ul>
+                  <div className="mt-6 flex flex-wrap gap-1" aria-hidden="true">
+                    {Array.from({ length: c.total }, (_, i) => (
+                      <span key={i} className={`h-1.5 w-1.5 rounded-[1px] ${i < c.pass ? "bg-amber-400" : "bg-white/15"}`} />
+                    ))}
+                  </div>
+                </article>
+              ))}
+            </div>
+          </div>
+        </section>
+      );
+    }
+
+    function Evidence() {
+      const domains = [
+        "Leaching kinetics",
+        "Solvent extraction",
+        "Precipitation & crystallization",
+        "Impurity deportment",
+        "Thermal processing",
+        "Electrochemical recovery",
+        "Feed characterization",
+      ];
+      return (
+        <section id="evidence" className="scroll-mt-24 border-t border-white/10 bg-slate-950/40">
+          <div className="mx-auto max-w-6xl px-5 py-20 md:px-6 md:py-28">
+            <p className="text-xs font-medium uppercase tracking-[0.22em] text-amber-400">Evidence</p>
+            <h2 className="mt-4 font-serif text-3xl tracking-tight md:text-4xl">42 of 53 physics checks pass.</h2>
+            <p className="mt-4 max-w-2xl text-slate-400">
+              Eleven fail. They are listed internally and tracked in the open on every engagement. We would rather show a gap than a badge we did not earn.
+            </p>
+
+            <div className="mt-12 grid gap-6 md:grid-cols-3">
+              {[
+                { k: "42 / 53", l: "Physics consistency checks passing" },
+                { k: "35", l: "Prediction heads on the CriticalPath model" },
+                { k: "7", l: "Process domains, trained per circuit" },
+              ].map((s) => (
+                <div key={s.l} className="rounded-xl border border-white/10 px-6 py-7">
+                  <p className="font-serif text-4xl text-amber-400 md:text-5xl">{s.k}</p>
+                  <p className="mt-3 text-sm text-slate-400">{s.l}</p>
+                </div>
+              ))}
+            </div>
+
+            <div className="mt-10 rounded-xl border border-white/10 p-6 md:p-8">
+              <div className="flex flex-wrap items-end justify-between gap-4">
+                <div>
+                  <p className="text-sm font-medium text-white">Physics audit grid</p>
+                  <p className="mt-1 text-xs text-slate-500">Amber = passing. Hollow = failing or incomplete. 53 cells.</p>
+                </div>
+                <p className="text-xs text-slate-500">Mass · charge · bounds · phase · stoichiometry</p>
+              </div>
+              <div className="mt-6 flex flex-wrap gap-1.5" role="img" aria-label="42 of 53 physics checks passing">
+                {Array.from({ length: 53 }, (_, i) => (
+                  <span
+                    key={i}
+                    className={`h-3 w-3 rounded-[2px] sm:h-3.5 sm:w-3.5 ${i < 42 ? "bg-amber-400" : "border border-white/20 bg-transparent"}`}
+                  />
+                ))}
+              </div>
+              <div className="mt-8 grid gap-2 sm:grid-cols-2 lg:grid-cols-4">
+                {domains.map((d) => (
+                  <p key={d} className="text-sm text-slate-300">
+                    <span className="mr-2 text-amber-400/80">▸</span>
+                    {d}
+                  </p>
+                ))}
+              </div>
+              <p className="mt-8 max-w-3xl text-sm leading-relaxed text-slate-400">
+                Checks cover conservation of mass and charge, thermodynamic feasibility, phase-rule consistency, and stoichiometric closure on each head. A prediction that fails a check is not shown as a recommendation. That is the product.
+              </p>
+            </div>
+          </div>
+        </section>
+      );
+    }
+
+    function Pricing() {
+      const tiers = [
+        {
+          name: "Assessment",
+          price: "$25K",
+          note: "Fixed",
+          featured: false,
+          points: [
+            "2–3 week diagnostic on one circuit",
+            "Process characterization and baseline model",
+            "Ranked experiment list with physics audit",
+            "You keep the written report",
+          ],
+        },
+        {
+          name: "Pilot",
+          price: "$75–150K",
+          note: "One domain, one campaign",
+          featured: true,
+          points: [
+            "Production data, closed-loop ranking",
+            "Model training on your historian and assays",
+            "Operator workflow for the next campaign",
+            "Full physics audit of heads in scope",
+          ],
+        },
+        {
+          name: "Annual",
+          price: "$120–300K",
+          note: "Per year",
+          featured: false,
+          points: [
+            "CriticalPath on the live flowsheet",
+            "Heads relevant to your circuit, retrained",
+            "Quarterly physics audit",
+            "Dedicated technical contact",
+          ],
+        },
+      ];
+      return (
+        <section id="pricing" className="scroll-mt-24 border-t border-white/10">
+          <div className="mx-auto max-w-6xl px-5 py-20 md:px-6 md:py-28">
+            <p className="text-xs font-medium uppercase tracking-[0.22em] text-amber-400">Pricing</p>
+            <h2 className="mt-4 font-serif text-3xl tracking-tight md:text-4xl">Straightforward commercial terms.</h2>
+            <p className="mt-4 max-w-2xl text-slate-400">
+              Ranges depend on circuit complexity, data quality, and the number of domains in scope. No usage metering on predictions.
+            </p>
+            <div className="mt-14 grid gap-5 lg:grid-cols-3">
+              {tiers.map((t) => (
+                <article
+                  key={t.name}
+                  className={`flex flex-col rounded-xl border p-6 md:p-7 ${t.featured ? "border-amber-400/50 bg-amber-400/[0.06]" : "border-white/10 bg-white/[0.02]"}`}
+                >
+                  <div className="flex items-baseline justify-between">
+                    <h3 className="text-sm font-medium uppercase tracking-[0.14em] text-slate-300">{t.name}</h3>
+                    {t.featured && <span className="text-[11px] text-amber-300">Typical first engagement</span>}
+                  </div>
+                  <p className="mt-5 font-serif text-4xl text-white">{t.price}</p>
+                  <p className="mt-1 text-sm text-slate-500">{t.note}</p>
+                  <ul className="mt-6 flex-1 space-y-3 text-sm text-slate-300">
+                    {t.points.map((p) => (
+                      <li key={p} className="flex gap-2.5">
+                        <span className="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-amber-400" />
+                        {p}
+                      </li>
+                    ))}
+                  </ul>
+                  <a href="#contact" className={`mt-8 rounded-md px-4 py-2.5 text-center text-sm font-medium transition ${t.featured ? "bg-amber-400 text-slate-900 hover:bg-amber-300" : "border border-white/15 text-white hover:border-white/30"}`}>
+                    Talk to us
+                  </a>
+                </article>
+              ))}
+            </div>
+          </div>
+        </section>
+      );
+    }
+
+    function Founder() {
+      return (
+        <section id="founder" className="scroll-mt-24 border-t border-white/10 bg-slate-950/40">
+          <div className="mx-auto grid max-w-6xl items-start gap-12 px-5 py-20 md:grid-cols-12 md:px-6 md:py-28">
+            <div className="md:col-span-4">
+              <p className="text-xs font-medium uppercase tracking-[0.22em] text-amber-400">Founder</p>
+              <div className="mt-8 flex items-center gap-4">
+                <div className="flex h-16 w-16 items-center justify-center rounded-lg border border-amber-400/30 bg-amber-400/10 font-serif text-xl text-amber-300">MJ</div>
+                <div>
+                  <h2 className="text-xl font-medium">Mike Jacobs</h2>
+                  <p className="text-sm text-slate-400">Founder, Pyral</p>
+                </div>
+              </div>
+              <dl className="mt-8 space-y-3 text-sm">
+                <div className="flex justify-between gap-4 border-b border-white/10 py-2">
+                  <dt className="text-slate-500">Training</dt>
+                  <dd className="text-slate-200">CS, UC Berkeley</dd>
+                </div>
+                <div className="flex justify-between gap-4 border-b border-white/10 py-2">
+                  <dt className="text-slate-500">Service</dt>
+                  <dd className="text-slate-200">United States Marine Corps</dd>
+                </div>
+                <div className="flex justify-between gap-4 border-b border-white/10 py-2">
+                  <dt className="text-slate-500">Prior</dt>
+                  <dd className="text-right text-slate-200">Defense AI deployment</dd>
+                </div>
+              </dl>
+            </div>
+            <div className="md:col-span-8 md:pt-10">
+              <h3 className="font-serif text-2xl leading-snug tracking-tight md:text-3xl">
+                Materials programs fail the way software programs used to: no feedback loop between experiment and model, and no one accountable for the next run.
+              </h3>
+              <p className="mt-6 max-w-2xl text-[15px] leading-relaxed text-slate-400">
+                Jacobs built and deployed machine-learning systems in defense, then watched critical-minerals and recycling teams make large experimental bets without a posterior. Pyral is the disciplined version of that loop — physics-checked, ranked, and scoped to the circuit you actually run. The tone is technical because the work is.
+              </p>
+            </div>
+          </div>
+        </section>
+      );
+    }
+
+    function Contact() {
+      const [form, setForm] = useState({ name: "", email: "", company: "", role: "", message: "" });
+      const [sent, setSent] = useState(false);
+      const [error, setError] = useState("");
+
+      const onChange = (e) => setForm((f) => ({ ...f, [e.target.name]: e.target.value }));
+
+      const onSubmit = (e) => {
+        e.preventDefault();
+        if (!form.name.trim() || !form.email.trim() || !form.company.trim()) {
+          setError("Name, email, and company are required.");
+          return;
+        }
+        setError("");
+        setSent(true);
+      };
+
+      return (
+        <section id="contact" className="scroll-mt-24 border-t border-white/10">
+          <div className="mx-auto grid max-w-
